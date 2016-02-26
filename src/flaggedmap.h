@@ -13,17 +13,17 @@ class FlaggedMap : public std::map<Key, Value>
 
         std::vector<Key> m_flags;
 
-        virtual std::vector<Key> getSimpleKeys(Key composedKey) const;
+        virtual std::vector<Key> getSimpleKeys(const Key& composedKey) const;
 
     public:
 
-        FlaggedMap(std::vector<Key> flags) : std::map<Key, Value>(), m_flags(flags) {}
-        FlaggedMap(std::initializer_list<Key> flags) : std::map<Key, Value>(), m_flags(flags) {}
+        FlaggedMap(const std::vector<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
+        FlaggedMap(const std::initializer_list<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         virtual ~FlaggedMap() {}
 
-        virtual std::map<Key, Value*> getSubSets(Key composedKey);
+        virtual std::map<Key, Value*> getSubSets(const Key& composedKey);
 
-        virtual std::map<Key, const Value*> getSubSets(Key composedKey) const;
+        virtual std::map<Key, const Value*> getSubSets(const Key& composedKey) const;
 
         virtual Value& operator[](const Key& k);
 };
@@ -32,7 +32,7 @@ class FlaggedMap : public std::map<Key, Value>
 // ==============================
 
 template<typename Key, typename Value>
-std::vector<Key> FlaggedMap<Key, Value>::getSimpleKeys(Key composedKey) const
+std::vector<Key> FlaggedMap<Key, Value>::getSimpleKeys(const Key& composedKey) const
 {
     std::vector<Key> simpleKeys;
 
@@ -49,7 +49,7 @@ std::vector<Key> FlaggedMap<Key, Value>::getSimpleKeys(Key composedKey) const
 // ==============================
 
 template<typename Key, typename Value>
-std::map<Key, Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey)
+std::map<Key, Value*> FlaggedMap<Key, Value>::getSubSets(const Key& composedKey)
 {
     std::vector<Key> keys = getSimpleKeys(composedKey);
     std::map<Key, Value*> subSets;
@@ -59,7 +59,8 @@ std::map<Key, Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey)
     for (Key k : keys)
     {
         it = this->find(k);
-        subSets[k] = &(it->second);
+        if (it != this->end())
+            subSets[k] = &(it->second);
     }
 
     return subSets;
@@ -69,7 +70,7 @@ std::map<Key, Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey)
 // ==============================
 
 template<typename Key, typename Value>
-std::map<Key, const Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey) const
+std::map<Key, const Value*> FlaggedMap<Key, Value>::getSubSets(const Key& composedKey) const
 {
     std::vector<Key> keys = getSimpleKeys(composedKey);
     std::map<Key, const Value*> subSets;
@@ -79,7 +80,8 @@ std::map<Key, const Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey) 
     for (Key k : keys)
     {
         it = this->find(k);
-        subSets[k] = &(it->second);
+        if (it != this->end())
+            subSets[k] = &(it->second);
     }
 
     return subSets;
@@ -97,4 +99,4 @@ Value& FlaggedMap<Key, Value>::operator[](const Key& k)
     return std::map<Key, Value>::operator[](k);
 }
 
-#endif // FLAGGEDMAP_H
+#endif
