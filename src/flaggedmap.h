@@ -1,0 +1,100 @@
+#ifndef FLAGGEDMAP_H
+#define FLAGGEDMAP_H
+
+#include <map>
+#include <vector>
+#include <initializer_list>
+#include <algorithm>
+
+template<typename Key, typename Value>
+class FlaggedMap : public std::map<Key, Value>
+{
+    private:
+
+        std::vector<Key> m_flags;
+
+        virtual std::vector<Key> getSimpleKeys(Key composedKey) const;
+
+    public:
+
+        FlaggedMap(std::vector<Key> flags) : std::map<Key, Value>(), m_flags(flags) {}
+        FlaggedMap(std::initializer_list<Key> flags) : std::map<Key, Value>(), m_flags(flags) {}
+        virtual ~FlaggedMap() {}
+
+        virtual std::map<Key, Value*> getSubSets(Key composedKey);
+
+        virtual std::map<Key, const Value*> getSubSets(Key composedKey) const;
+
+        virtual Value& operator[](const Key& k);
+};
+
+// ==============================
+// ==============================
+
+template<typename Key, typename Value>
+std::vector<Key> FlaggedMap<Key, Value>::getSimpleKeys(Key composedKey) const
+{
+    std::vector<Key> simpleKeys;
+
+    for (Key key : m_flags)
+    {
+        if (composedKey & key)
+            simpleKeys.push_back(key);
+    }
+
+    return simpleKeys;
+}
+
+// ==============================
+// ==============================
+
+template<typename Key, typename Value>
+std::map<Key, Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey)
+{
+    std::vector<Key> keys = getSimpleKeys(composedKey);
+    std::map<Key, Value*> subSets;
+
+    typename std::map<Key, Value>::iterator it;
+
+    for (Key k : keys)
+    {
+        it = this->find(k);
+        subSets[k] = &(it->second);
+    }
+
+    return subSets;
+}
+
+// ==============================
+// ==============================
+
+template<typename Key, typename Value>
+std::map<Key, const Value*> FlaggedMap<Key, Value>::getSubSets(Key composedKey) const
+{
+    std::vector<Key> keys = getSimpleKeys(composedKey);
+    std::map<Key, const Value*> subSets;
+
+    typename std::map<Key, Value>::const_iterator it;
+
+    for (Key k : keys)
+    {
+        it = this->find(k);
+        subSets[k] = &(it->second);
+    }
+
+    return subSets;
+}
+
+// ==============================
+// ==============================
+
+template<typename Key, typename Value>
+Value& FlaggedMap<Key, Value>::operator[](const Key& k)
+{
+    if (std::find(m_flags.begin(), m_flags.end(), k) == m_flags.end())
+        throw std::out_of_range("Invalid key");
+
+    return std::map<Key, Value>::operator[](k);
+}
+
+#endif // FLAGGEDMAP_H
