@@ -57,3 +57,33 @@ A noter que l'opérateur [] a été redéfini afin d'empêcher d'affecter des va
 ```cpp
 virtual Value& operator[](const Key& k);
 ```
+
+## ComposedMap
+
+La classe `FlaggedMap` représente une `map` dont les valeurs sont des conteneurs (`vector`, `map`...). Utilisée pour stocker des sous-ensembles d'éléments triés par clés, elle permet d'itérer de façon transparente sur l'ensemble des éléments, comme le présente le code suivant.
+
+```cpp
+enum class FruitType { APPLE, ORANGE };
+ 
+ComposedMap<FruitType, std::vector<Fruit>> fruits;
+fruits[APPLE] = { ... };
+fruits[ORANGE] = { ... };
+ 
+unsigned int totalWeight = 0;
+ 
+// All fruits
+for (auto it = fruits.begin(); it != fruits.end(); ++it)
+  totalWeight += it->getWeight();
+ 
+// Apples (classic)
+for (auto aIt = fruits[APPLE].begin(); aIt != fruits[APPLE].end(); ++aIt)
+  std::cout << aIt->size() << std::endl;
+```
+
+Ici, en plus de pouvoir itérérer sur les sous conteneurs, il est possible d'itérer sur l'ensemble des objets de la `ComposedMap`.
+
+La classe `ComposedMap` définit ses propres itérateurs qui prennent les valeurs présentées en bas du schéma qui suit.
+
+![Working diagram](https://github.com/Manouel/Maps/blob/master/src/ComposedMap/working.png)
+
+Si les sous-conteneurs sont des `map`, alors ce sont les valeurs des sous-maps qui seront retournées par les itérateurs.
