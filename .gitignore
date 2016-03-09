@@ -26,3 +26,8 @@
 *.exe
 *.out
 *.app
+
+# Qt files / directories
+*.pro.user
+moc_*
+build-*
