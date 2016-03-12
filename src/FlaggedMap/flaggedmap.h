@@ -17,6 +17,7 @@ class FlaggedMap : public std::map<Key, Value>
 
     public:
 
+        FlaggedMap() : : std::map<Key, Value>() {}
         FlaggedMap(const std::vector<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         FlaggedMap(const std::initializer_list<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         virtual ~FlaggedMap() {}
@@ -93,7 +94,7 @@ std::map<Key, const Value*> FlaggedMap<Key, Value>::getSubSets(const Key& compos
 template<typename Key, typename Value>
 Value& FlaggedMap<Key, Value>::operator[](const Key& k)
 {
-    if (std::find(m_flags.begin(), m_flags.end(), k) == m_flags.end())
+    if (!m_flags.empty() && std::find(m_flags.begin(), m_flags.end(), k) == m_flags.end())
         throw std::out_of_range("Invalid key");
 
     return std::map<Key, Value>::operator[](k);

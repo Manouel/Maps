@@ -357,6 +357,7 @@ class ComposedMap : public std::map<Key, Value>
                 }
         };
         
+        ComposedMap() : std::map<Key, Value>() {}
         ComposedMap(const std::vector<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         ComposedMap(const std::initializer_list<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         virtual ~ComposedMap() {}
@@ -600,7 +601,7 @@ ComposedMap<Key, Value> ComposedMap<Key, Value>::getSubSets(const Key& composedK
 template<typename Key, typename Value>
 Value& ComposedMap<Key, Value>::operator[](const Key& k)
 {
-    if (std::find(m_flags.begin(), m_flags.end(), k) == m_flags.end())
+    if (!m_flags.empty() && std::find(m_flags.begin(), m_flags.end(), k) == m_flags.end())
         throw std::out_of_range("Invalid key");
 
     return std::map<Key, Value>::operator[](k);
