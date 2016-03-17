@@ -37,10 +37,15 @@ std::vector<Key> FlaggedMap<Key, Value>::getSimpleKeys(const Key& composedKey) c
 {
     std::vector<Key> simpleKeys;
 
-    for (Key key : m_flags)
+    if (m_flags.empty())
+        simpleKeys.push_back(composedKey);
+    else
     {
-        if (composedKey & key)
-            simpleKeys.push_back(key);
+        for (Key key : m_flags)
+        {
+            if (composedKey & key)
+                simpleKeys.push_back(key);
+        }
     }
 
     return simpleKeys;

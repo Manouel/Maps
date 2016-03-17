@@ -235,9 +235,11 @@ void ComposedMapTest::emptyTest()
 
     QCOMPARE(pseudoEmptyVect[1].empty(), true);
     QCOMPARE(vect[1].empty(), false);
+    QCOMPARE(vect.empty(1), false);
 
     QCOMPARE(pseudoEmptyMap[2].empty(), true);
     QCOMPARE(map[2].empty(), false);
+    QCOMPARE(map.empty(2), false);
 }
 
 void ComposedMapTest::elementsCountTest()

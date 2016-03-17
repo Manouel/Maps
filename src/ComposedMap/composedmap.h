@@ -372,22 +372,22 @@ class ComposedMap : public std::map<Key, Value>
         virtual const_iterator cend() const;
 
         virtual bool empty() const;
-        virtual bool empty(Key k) const;
+        virtual bool empty(const Key& key) const;
 
         virtual unsigned int elementsCount() const;
 
         virtual iterator erase(iterator position);
-        virtual typename std::map<Key, Value>::size_type erase(const Key& k);
+        virtual typename std::map<Key, Value>::size_type erase(const Key& key);
         virtual iterator erase(iterator first, iterator last);
         virtual typename std::map<Key, Value>::iterator erase(typename std::map<Key, Value>::const_iterator position);
         virtual typename std::map<Key, Value>::iterator erase(typename std::map<Key, Value>::const_iterator first, typename std::map<Key, Value>::const_iterator last);
 
         virtual void clear();
-        virtual void clear(const Key& k);
+        virtual void clear(const Key& key);
 
         virtual ComposedMap<Key, Value> getSubSets(const Key& composedKey) const;
 
-        virtual Value& operator[](const Key& k);
+        virtual Value& operator[](const Key& key);
 };
 
 // ==============================
@@ -457,12 +457,17 @@ bool ComposedMap<Key, Value>::empty() const
 // ==============================
 
 template<typename Key, typename Value>
-bool ComposedMap<Key, Value>::empty(Key k) const
+bool ComposedMap<Key, Value>::empty(const Key& key) const
 {
-    if (!this->count(k))
-        throw std::out_of_range("Invalid key");
+    std::vector<Key> keys = getSimpleKeys(key);
 
-    return this->at(k).empty();
+    for (Key k : keys)
+    {
+        if (!this->at(k).empty())
+            return false;
+    }
+
+    return true;
 }
 
 // ==============================
@@ -498,9 +503,9 @@ typename ComposedMap<Key, Value>::iterator ComposedMap<Key, Value>::erase(iterat
 // ==============================
 
 template<typename Key, typename Value>
-typename std::map<Key, Value>::size_type ComposedMap<Key, Value>::erase(const Key& k)
+typename std::map<Key, Value>::size_type ComposedMap<Key, Value>::erase(const Key& key)
 {
-    return std::map<Key, Value>::erase(k);
+    return std::map<Key, Value>::erase(key);
 }
 
 // ==============================
@@ -552,9 +557,12 @@ void ComposedMap<Key, Value>::clear()
 // ==============================
 
 template<typename Key, typename Value>
-void ComposedMap<Key, Value>::clear(const Key& k)
+void ComposedMap<Key, Value>::clear(const Key& key)
 {
-    this->at(k).clear();
+    std::vector<Key> keys = getSimpleKeys(key);
+
+    for (Key k : keys)
+        this->at(k).clear();
 }
 
 // ==============================
@@ -565,10 +573,15 @@ std::vector<Key> ComposedMap<Key, Value>::getSimpleKeys(const Key& composedKey) 
 {
     std::vector<Key> simpleKeys;
 
-    for (Key key : m_flags)
+    if (m_flags.empty())
+        simpleKeys.push_back(composedKey);
+    else
     {
-        if (composedKey & key)
-            simpleKeys.push_back(key);
+        for (Key key : m_flags)
+        {
+            if (composedKey & key)
+                simpleKeys.push_back(key);
+        }
     }
 
     return simpleKeys;
@@ -599,12 +612,12 @@ ComposedMap<Key, Value> ComposedMap<Key, Value>::getSubSets(const Key& composedK
 // ==============================
 
 template<typename Key, typename Value>
-Value& ComposedMap<Key, Value>::operator[](const Key& k)
+Value& ComposedMap<Key, Value>::operator[](const Key& key)
 {
-    if (!m_flags.empty() && std::find(m_flags.begin(), m_flags.end(), k) == m_flags.end())
+    if (!m_flags.empty() && std::find(m_flags.begin(), m_flags.end(), key) == m_flags.end())
         throw std::out_of_range("Invalid key");
 
-    return std::map<Key, Value>::operator[](k);
+    return std::map<Key, Value>::operator[](key);
 }
 
 #endif  // COMPOSEDMAP_H
