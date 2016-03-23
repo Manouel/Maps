@@ -13,6 +13,8 @@ class ComposedMapTest : public QObject
         void endTest();
         void cbeginTest();
         void cendTest();
+        void mBeginTest();
+        void mEndTest();
         void emptyTest();
         void elementsCountTest();
         void clearTest();
@@ -222,24 +224,96 @@ void ComposedMapTest::cendTest()
     QCOMPARE(constMap.cend(), constMap.end());
 }
 
+void ComposedMapTest::mBeginTest()
+{
+    QCOMPARE(emptyVect.mbegin(), emptyVect.mend());
+    QCOMPARE(constEmptyVect.mbegin(), constEmptyVect.mend());
+
+    auto vit = pseudoEmptyVect.mbegin();
+    QCOMPARE(vit->first, 1);
+    ++vit;
+    QCOMPARE(vit, pseudoEmptyVect.mend());
+    auto cvit = constPseudoEmptyVect.mbegin();
+    QCOMPARE(cvit->first, 1);
+    ++cvit;
+    QCOMPARE(cvit, constPseudoEmptyVect.mend());
+
+    QCOMPARE(vect.mbegin()->first, 1);
+    QCOMPARE(constVect.mbegin()->first, 1);
+
+
+    QCOMPARE(emptyMap.mbegin(), emptyMap.mend());
+    QCOMPARE(constEmptyMap.mbegin(), constEmptyMap.mend());
+
+    auto mit = pseudoEmptyMap.mbegin();
+    QCOMPARE(mit->first, 2);
+    ++mit;
+    QCOMPARE(mit, pseudoEmptyMap.mend());
+    auto cmit = constPseudoEmptyMap.mbegin();
+    QCOMPARE(cmit->first, 2);
+    ++cmit;
+    QCOMPARE(cmit, constPseudoEmptyMap.mend());
+
+    QCOMPARE(map.mbegin()->first, 1);
+    QCOMPARE(constMap.mbegin()->first, 1);
+}
+
+void ComposedMapTest::mEndTest()
+{
+    auto pvit = pseudoEmptyVect.mend();
+    --pvit;
+    QCOMPARE(pvit->first, 1);
+    auto cpvit = constPseudoEmptyVect.mend();
+    --cpvit;
+    QCOMPARE(cpvit->first, 1);
+
+    auto vit = vect.mend();
+    --vit;
+    QCOMPARE(vit->first, 3);
+    auto cvit = constVect.mend();
+    --cvit;
+    QCOMPARE(cvit->first, 3);
+
+
+    auto pmit = pseudoEmptyMap.mend();
+    --pmit;
+    QCOMPARE(pmit->first, 2);
+    auto cpmit = constPseudoEmptyMap.mend();
+    --cpmit;
+    QCOMPARE(cpmit->first, 2);
+
+    auto mit = map.mend();
+    --mit;
+    QCOMPARE(mit->first, 3);
+    auto cmit = constMap.mend();
+    --cmit;
+    QCOMPARE(cmit->first, 3);
+}
+
 void ComposedMapTest::emptyTest()
 {
     QCOMPARE(emptyVect.empty(), true);
+    QCOMPARE(emptyVect.empty(1), true);
+
     QCOMPARE(pseudoEmptyVect.empty(), true);
+    QCOMPARE(pseudoEmptyVect.empty(1), true);
+    QCOMPARE(pseudoEmptyVect[1].empty(), true);
+
     QCOMPARE(vect.empty(), false);
+    QCOMPARE(vect.empty(1), false);
+    QCOMPARE(vect[1].empty(), false);
+
 
     QCOMPARE(emptyMap.empty(), true);
+    QCOMPARE(emptyMap.empty(2), true);
+
     QCOMPARE(pseudoEmptyMap.empty(), true);
-    QCOMPARE(map.empty(), false);
-
-
-    QCOMPARE(pseudoEmptyVect[1].empty(), true);
-    QCOMPARE(vect[1].empty(), false);
-    QCOMPARE(vect.empty(1), false);
-
+    QCOMPARE(pseudoEmptyMap.empty(2), true);
     QCOMPARE(pseudoEmptyMap[2].empty(), true);
-    QCOMPARE(map[2].empty(), false);
+
+    QCOMPARE(map.empty(), false);
     QCOMPARE(map.empty(2), false);
+    QCOMPARE(map[2].empty(), false);
 }
 
 void ComposedMapTest::elementsCountTest()

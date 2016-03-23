@@ -361,6 +361,12 @@ class ComposedMap : public std::map<Key, Value>
         virtual const_iterator cbegin() const;
         virtual const_iterator cend() const;
 
+        virtual typename std::map<Key, Value>::iterator mbegin();
+        virtual typename std::map<Key, Value>::const_iterator mbegin() const;
+
+        virtual typename std::map<Key, Value>::iterator mend();
+        virtual typename std::map<Key, Value>::const_iterator mend() const;
+
         virtual bool empty() const;
         virtual bool empty(Key k) const;
 
@@ -428,6 +434,36 @@ typename ComposedMap<Key, Value>::const_iterator ComposedMap<Key, Value>::cend()
 // ==============================
 
 template<typename Key, typename Value>
+typename std::map<Key, Value>::iterator ComposedMap<Key, Value>::mbegin()
+{
+    return std::map<Key, Value>::begin();
+}
+
+template<typename Key, typename Value>
+typename std::map<Key, Value>::const_iterator ComposedMap<Key, Value>::mbegin() const
+{
+    return std::map<Key, Value>::begin();
+}
+
+// ==============================
+// ==============================
+
+template<typename Key, typename Value>
+typename std::map<Key, Value>::iterator ComposedMap<Key, Value>::mend()
+{
+    return std::map<Key, Value>::end();
+}
+
+template<typename Key, typename Value>
+typename std::map<Key, Value>::const_iterator ComposedMap<Key, Value>::mend() const
+{
+    return std::map<Key, Value>::end();
+}
+
+// ==============================
+// ==============================
+
+template<typename Key, typename Value>
 bool ComposedMap<Key, Value>::empty() const
 {
     for (auto it = std::map<Key, Value>::begin(); it != std::map<Key, Value>::end(); ++it)
@@ -445,10 +481,7 @@ bool ComposedMap<Key, Value>::empty() const
 template<typename Key, typename Value>
 bool ComposedMap<Key, Value>::empty(Key k) const
 {
-    if (!this->count(k))
-        throw std::out_of_range("Invalid key");
-
-    return this->at(k).empty();
+    return (this->count(k) == 0 || this->at(k).empty());
 }
 
 // ==============================
@@ -540,7 +573,8 @@ void ComposedMap<Key, Value>::clear()
 template<typename Key, typename Value>
 void ComposedMap<Key, Value>::clear(const Key& k)
 {
-    this->at(k).clear();
+    if (this->count(k) > 0)
+        this->at(k).clear();
 }
 
 #endif  // COMPOSEDMAP_H
