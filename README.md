@@ -60,7 +60,7 @@ virtual Value& operator[](const Key& k);
 
 ## ComposedMap
 
-La classe `FlaggedMap` représente une `map` dont les valeurs sont des conteneurs (`vector`, `map`...). Utilisée pour stocker des sous-ensembles d'éléments triés par clés, elle permet d'itérer de façon transparente sur l'ensemble des éléments, comme le présente le code suivant.
+La classe `ComposedMap` représente une `map` dont les valeurs sont des conteneurs (`vector`, `map`...). Utilisée pour stocker des sous-ensembles d'éléments triés par clés, elle permet d'itérer de façon transparente sur l'ensemble des éléments, comme le présente le code suivant.
 
 ```cpp
 enum class FruitType { APPLE, ORANGE };
