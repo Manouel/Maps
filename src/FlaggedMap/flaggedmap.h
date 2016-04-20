@@ -17,7 +17,7 @@ class FlaggedMap : public std::map<Key, Value>
 
     public:
 
-        FlaggedMap() : : std::map<Key, Value>() {}
+        FlaggedMap() : std::map<Key, Value>() {}
         FlaggedMap(const std::vector<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         FlaggedMap(const std::initializer_list<Key>& flags) : std::map<Key, Value>(), m_flags(flags) {}
         virtual ~FlaggedMap() {}
