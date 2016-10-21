@@ -13,8 +13,8 @@ class ComposedMapTest : public QObject
         void endTest();
         void cbeginTest();
         void cendTest();
-        void mBeginTest();
-        void mEndTest();
+        void mbeginTest();
+        void mendTest();
         void emptyTest();
         void elementsCountTest();
         void clearTest();
@@ -224,7 +224,7 @@ void ComposedMapTest::cendTest()
     QCOMPARE(constMap.cend(), constMap.end());
 }
 
-void ComposedMapTest::mBeginTest()
+void ComposedMapTest::mbeginTest()
 {
     QCOMPARE(emptyVect.mbegin(), emptyVect.mend());
     QCOMPARE(constEmptyVect.mbegin(), constEmptyVect.mend());
@@ -258,7 +258,7 @@ void ComposedMapTest::mBeginTest()
     QCOMPARE(constMap.mbegin()->first, 1);
 }
 
-void ComposedMapTest::mEndTest()
+void ComposedMapTest::mendTest()
 {
     auto pvit = pseudoEmptyVect.mend();
     --pvit;
@@ -358,12 +358,14 @@ void ComposedMapTest::eraseTest()
 
     /** erase(iterator position); **/
 
+    QCOMPARE(emptyVect.erase(emptyVect.cbegin()), emptyVect.end());
     QCOMPARE(emptyVect.erase(emptyVect.begin()), emptyVect.end());
+    QCOMPARE(pseudoEmptyVect.erase(pseudoEmptyVect.cbegin()), pseudoEmptyVect.end());
     QCOMPARE(pseudoEmptyVect.erase(pseudoEmptyVect.begin()), pseudoEmptyVect.end());
-    QCOMPARE(pseudoEmptyVect.size(), 1u);
+    QCOMPARE(pseudoEmptyVect.size(), 1ul);
 
     QCOMPARE(vect.elementsCount(), 6u);
-    auto vnext = vect.erase(vect.begin());
+    auto vnext = vect.erase(vect.cbegin());
     QCOMPARE(vect.elementsCount(), 5u);
     QCOMPARE(vnext, vect.begin());
     QCOMPARE(*vnext, std::string("2"));
@@ -389,12 +391,14 @@ void ComposedMapTest::eraseTest()
 
 
 
+    QCOMPARE(emptyMap.erase(emptyMap.cbegin()), emptyMap.end());
     QCOMPARE(emptyMap.erase(emptyMap.begin()), emptyMap.end());
+    QCOMPARE(pseudoEmptyMap.erase(pseudoEmptyMap.cbegin()), pseudoEmptyMap.end());
     QCOMPARE(pseudoEmptyMap.erase(pseudoEmptyMap.begin()), pseudoEmptyMap.end());
-    QCOMPARE(pseudoEmptyMap.size(), 1u);
+    QCOMPARE(pseudoEmptyMap.size(), 1ul);
 
     QCOMPARE(map.elementsCount(), 6u);
-    auto mnext = map.erase(map.begin());
+    auto mnext = map.erase(map.cbegin());
     QCOMPARE(map.elementsCount(), 5u);
     QCOMPARE(mnext, map.begin());
     QCOMPARE(*mnext, std::string("2"));
@@ -421,21 +425,21 @@ void ComposedMapTest::eraseTest()
 
     /** erase(const Key& k) **/
 
-    QCOMPARE(emptyVect.erase(1), 0u);
-    QCOMPARE(pseudoEmptyVect.erase(1), 1u);
+    QCOMPARE(emptyVect.erase(1), 0ul);
+    QCOMPARE(pseudoEmptyVect.erase(1), 1ul);
 
-    QCOMPARE(vect.count(1), 1u);
-    QCOMPARE(vect.erase(1), 1u);
-    QCOMPARE(vect.count(1), 0u);
+    QCOMPARE(vect.count(1), 1ul);
+    QCOMPARE(vect.erase(1), 1ul);
+    QCOMPARE(vect.count(1), 0ul);
     QCOMPARE(vect.elementsCount(), 2u);
 
 
-    QCOMPARE(emptyMap.erase(1), 0u);
-    QCOMPARE(pseudoEmptyMap.erase(2), 1u);
+    QCOMPARE(emptyMap.erase(1), 0ul);
+    QCOMPARE(pseudoEmptyMap.erase(2), 1ul);
 
-    QCOMPARE(map.count(1), 1u);
-    QCOMPARE(map.erase(1), 1u);
-    QCOMPARE(map.count(1), 0u);
+    QCOMPARE(map.count(1), 1ul);
+    QCOMPARE(map.erase(1), 1ul);
+    QCOMPARE(map.count(1), 0ul);
     QCOMPARE(map.elementsCount(), 2u);
 
 

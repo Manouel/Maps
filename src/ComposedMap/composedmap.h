@@ -382,7 +382,7 @@ class ComposedMap : public std::map<Key, Value>
 
         virtual unsigned int elementsCount() const;
 
-        virtual iterator erase(iterator position);
+        virtual iterator erase(const_iterator position);
         virtual typename std::map<Key, Value>::size_type erase(const Key& key);
         virtual iterator erase(iterator first, iterator last);
         virtual typename std::map<Key, Value>::iterator erase(typename std::map<Key, Value>::const_iterator position);
@@ -524,12 +524,19 @@ unsigned int ComposedMap<Key, Value>::elementsCount() const
 // ==============================
 
 template<typename Key, typename Value>
-typename ComposedMap<Key, Value>::iterator ComposedMap<Key, Value>::erase(iterator position)
+typename ComposedMap<Key, Value>::iterator ComposedMap<Key, Value>::erase(const_iterator position)
 {
     if (position != end())
     {
-        auto nextElement = position.m_CurrentContainer->second.erase(position.m_It);
-        return iterator(*this, position.m_CurrentContainer, nextElement);
+        typename std::map<Key, Value>::iterator contIt = std::map<Key, Value>::begin();
+        while (contIt != std::map<Key, Value>::end() && position.m_CurrentContainer != contIt)
+            ++contIt;
+
+        if (contIt != std::map<Key, Value>::end())
+        {
+            auto nextElement = contIt->second.erase(position.m_It);
+            return iterator(*this, contIt, nextElement);
+        }
     }
 
     return end();
